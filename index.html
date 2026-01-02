@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拾光．小豆芽</title>
+
+    <link rel="icon" type="image/png" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/icon.png" />
+    <link rel="apple-touch-icon" href="assets/img/icon.png" />
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body class="p-6">
+    <div class="bg-decoration blob-1"></div>
+    <div class="bg-decoration blob-2"></div>
+    <div class="bg-decoration blob-3"></div>
+
+    <div id="app" v-cloak class="max-w-md mx-auto">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-black tracking-widest flex items-center justify-center gap-3">
+          <span class="text-4xl">🌱</span>
+          <span style="letter-spacing: 0.2em">拾光．小豆芽</span>
+        </h1>
+        <p class="text-[10px] mt-2 opacity-50 font-bold uppercase tracking-[0.3em]">
+          每天一點灌溉，釀成未來的森林
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-5 mb-10">
+        <div
+          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-6 text-center shadow-sm"
+        >
+          <p class="text-[10px] font-bold opacity-40 mb-1 tracking-widest uppercase">年度收成</p>
+          <p class="text-2xl font-black text-green-800">${{ totalSavings.toLocaleString() }}</p>
+        </div>
+        <div
+          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-6 text-center shadow-sm"
+        >
+          <p class="text-[10px] font-bold opacity-40 mb-1 tracking-widest uppercase">本月紀錄</p>
+          <p class="text-2xl font-black text-green-800">
+            {{ currentMonthDays }} <span class="text-xs">次</span>
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="bg-white/30 backdrop-blur-lg rounded-[3.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50"
+      >
+        <div class="flex justify-between items-center mb-8 px-2">
+          <div @click="changeMonth(-1)" class="arrow-icon opacity-40">⬅</div>
+
+          <div class="flex flex-col items-center">
+            <span class="text-xl font-black tracking-widest text-[#5c4b26]">
+              {{ viewYear }} / {{ String(viewMonth + 1).padStart(2, '0') }}
+            </span>
+            <button
+              v-if="!isTodayMonth"
+              @click="goToday"
+              class="mt-2 text-[9px] bg-white/80 text-[#86a789] px-3 py-1 rounded-full font-bold shadow-sm hover:bg-white transition-all"
+            >
+              回今天
+            </button>
+          </div>
+
+          <div @click="changeMonth(1)" class="arrow-icon opacity-40">➡</div>
+        </div>
+
+        <div
+          class="grid grid-cols-7 gap-3 text-center text-[9px] font-black opacity-30 mb-6 tracking-widest"
+        >
+          <div v-for="d in ['SUN','MON','TUE','WED','THU','FRI','SAT']" :key="d">{{ d }}</div>
+        </div>
+
+        <div class="grid grid-cols-7 gap-3">
+          <div v-for="empty in firstDayIndex" :key="'empty-'+empty"></div>
+
+          <button
+            v-for="day in daysInMonth"
+            :key="day"
+            @click="openModal(day)"
+            class="bean-shape h-14 transition-all day-content bean-hover-effect"
+            :class="[
+                        hasSaved(day) ? 'bg-growth saved' : 'bg-white/40 text-stone-400',
+                        isToday(day) ? 'today-outline' : ''
+                    ]"
+          >
+            <span v-if="isToday(day)" class="text-[14px] mb-0.5">🌱</span>
+            <span v-else-if="hasSaved(day)" class="text-[14px] mb-0.5">🌿</span>
+
+            <span class="text-[11px] font-black" :class="{ 'saved-text': hasSaved(day) }">
+              {{ day }}
+            </span>
+
+            <span
+              v-if="hasSaved(day)"
+              class="text-[9px] font-black tracking-tighter saved-text opacity-80"
+            >
+              ${{ savings[getDateKey(day)] }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <transition name="pop">
+        <div
+          v-if="showModal"
+          class="fixed inset-0 bg-stone-900/40 flex items-center justify-center p-6 backdrop-blur-md z-50"
+        >
+          <div
+            class="bg-[#fcfaf2]/95 w-full max-w-xs rounded-[3.5rem] p-10 shadow-2xl text-center border border-white"
+          >
+            <span
+              class="text-[10px] bg-[#86a789]/10 px-4 py-1 rounded-full text-[#86a789] font-black tracking-widest"
+            >
+              {{ selectedDateKey.replace(/-/g, ' . ') }}
+            </span>
+            <h2 class="text-2xl font-black mt-6 mb-8 text-[#735f32]">灌溉小豆子 🌱</h2>
+
+            <input
+              type="number"
+              v-model.number="inputAmount"
+              class="w-full bg-transparent border-b-2 border-stone-200 py-4 text-center text-4xl font-black text-[#86a789] focus:border-[#86a789] transition-all outline-none mb-10"
+              placeholder="0"
+              ref="amountInput"
+              inputmode="numeric"
+            />
+
+            <div class="space-y-4">
+              <button
+                @click="saveData"
+                class="w-full py-5 bg-[#86a789] text-white rounded-[2rem] font-black shadow-lg hover:brightness-105 active:scale-95 transition-all text-lg"
+              >
+                確定存入
+              </button>
+              <button @click="showModal = false" class="text-stone-400 text-sm font-bold">
+                先休息一下
+              </button>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
