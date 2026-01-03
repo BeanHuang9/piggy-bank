@@ -21,24 +21,24 @@
 
     <div id="app" v-cloak class="max-w-md mx-auto">
       <div class="text-center mb-10">
-        <h1 class="text-3xl font-black tracking-widest flex items-center justify-center gap-3">
-          <span class="text-4xl">🌱</span>
+        <h1 class="text-2xl font-black tracking-widest flex items-center justify-center gap-3">
+          <span class="text-3xl">🌱</span>
           <span style="letter-spacing: 0.2em">拾光．小豆芽</span>
         </h1>
-        <p class="text-[10px] mt-2 opacity-50 font-bold uppercase tracking-[0.3em]">
+        <p class="text-[12px] mt-2 opacity-50 font-bold uppercase tracking-[0.3em]">
           每天一點灌溉，釀成未來的森林
         </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-5 mb-10">
+      <div class="grid grid-cols-2 gap-5 mb-4">
         <div
-          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-6 text-center shadow-sm"
+          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-3 text-center shadow-sm"
         >
           <p class="text-[10px] font-bold opacity-40 mb-1 tracking-widest uppercase">年度收成</p>
           <p class="text-2xl font-black text-green-800">${{ totalSavings.toLocaleString() }}</p>
         </div>
         <div
-          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-6 text-center shadow-sm"
+          class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-3 text-center shadow-sm"
         >
           <p class="text-[10px] font-bold opacity-40 mb-1 tracking-widest uppercase">本月紀錄</p>
           <p class="text-2xl font-black text-green-800">
@@ -48,9 +48,9 @@
       </div>
 
       <div
-        class="bg-white/30 backdrop-blur-lg rounded-[3.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50"
+        class="bg-white/30 backdrop-blur-lg rounded-[3.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50"
       >
-        <div class="flex justify-between items-center mb-8 px-2">
+        <div class="flex justify-between items-center mb-6 px-2">
           <div @click="changeMonth(-1)" class="arrow-icon opacity-40">⬅</div>
 
           <div class="flex flex-col items-center">
@@ -70,19 +70,19 @@
         </div>
 
         <div
-          class="grid grid-cols-7 gap-3 text-center text-[9px] font-black opacity-30 mb-6 tracking-widest"
+          class="grid grid-cols-7 gap-2 text-center text-[9px] font-black opacity-30 mb-6 tracking-widest"
         >
           <div v-for="d in ['SUN','MON','TUE','WED','THU','FRI','SAT']" :key="d">{{ d }}</div>
         </div>
 
-        <div class="grid grid-cols-7 gap-3">
+        <div class="grid grid-cols-7 gap-2">
           <div v-for="empty in firstDayIndex" :key="'empty-'+empty"></div>
 
           <button
             v-for="day in daysInMonth"
             :key="day"
             @click="openModal(day)"
-            class="bean-shape h-14 transition-all day-content bean-hover-effect"
+            class="bean-shape h-12 transition-all day-content bean-hover-effect"
             :class="[
                         hasSaved(day) ? 'bg-growth saved' : 'bg-white/40 text-stone-400',
                         isToday(day) ? 'today-outline' : ''
