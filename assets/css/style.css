@@ -85,7 +85,7 @@ body::before {
 }
 
 .today-outline {
-  outline: 3px dashed var(--bean-green);
+  outline: 2px dashed var(--bean-green);
   outline-offset: 4px;
 }
 
