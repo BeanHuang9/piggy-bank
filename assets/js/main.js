@@ -4,6 +4,8 @@ createApp({
   setup() {
     // ===== 狀態管理 =====
     const savings = ref(JSON.parse(localStorage.getItem('beanSavingsVue')) || {});
+    const isAmountHidden = ref(JSON.parse(localStorage.getItem('beanAmountHidden')) || false);
+
     const viewDate = ref(new Date());
     const showModal = ref(false);
     const inputAmount = ref(null);
@@ -54,6 +56,12 @@ createApp({
 
     const hasSaved = (day) => {
       return !!savings.value[getDateKey(day)];
+    };
+
+    // ===== 金額顯示/隱藏（年度收成）=====
+    const toggleAmountHidden = () => {
+      isAmountHidden.value = !isAmountHidden.value;
+      localStorage.setItem('beanAmountHidden', JSON.stringify(isAmountHidden.value));
     };
 
     // ===== 操作方法 =====
@@ -112,6 +120,8 @@ createApp({
 
     return {
       savings,
+      isAmountHidden,
+      toggleAmountHidden,
       viewYear,
       viewMonth,
       firstDayIndex,

@@ -34,9 +34,25 @@
         <div
           class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-3 text-center shadow-sm"
         >
-          <p class="text-[10px] font-bold opacity-40 mb-1 tracking-widest uppercase">年度收成</p>
-          <p class="text-2xl font-black text-green-800">${{ totalSavings.toLocaleString() }}</p>
+          <div class="flex items-center justify-center gap-2 mb-1">
+            <p class="text-[10px] font-bold opacity-40 tracking-widest uppercase">年度收成</p>
+            <button
+              type="button"
+              class="amount-toggle-btn"
+              @click="toggleAmountHidden"
+              :aria-label="isAmountHidden ? '顯示金額' : '隱藏金額'"
+              :title="isAmountHidden ? '顯示金額' : '隱藏金額'"
+            >
+              <span v-if="isAmountHidden">🙈</span>
+              <span v-else>👀</span>
+            </button>
+          </div>
+          <p class="text-2xl font-black text-green-800">
+            <span v-if="isAmountHidden">＊＊＊＊＊＊</span>
+            <span v-else>${{ totalSavings.toLocaleString() }}</span>
+          </p>
         </div>
+
         <div
           class="bg-white/40 border border-white/60 backdrop-blur-md rounded-[2.5rem] p-3 text-center shadow-sm"
         >
@@ -51,7 +67,23 @@
         class="bg-white/30 backdrop-blur-lg rounded-[3.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50"
       >
         <div class="flex justify-between items-center mb-6 px-2">
-          <div @click="changeMonth(-1)" class="arrow-icon opacity-40">⬅</div>
+          <button
+            type="button"
+            @click="changeMonth(-1)"
+            class="arrow-icon opacity-40"
+            aria-label="上一個月"
+          >
+            <svg viewBox="0 0 24 24" class="arrow-svg" aria-hidden="true">
+              <path
+                d="M15 18l-6-6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
 
           <div class="flex flex-col items-center">
             <span class="text-xl font-black tracking-widest text-[#5c4b26]">
@@ -66,7 +98,23 @@
             </button>
           </div>
 
-          <div @click="changeMonth(1)" class="arrow-icon opacity-40">➡</div>
+          <button
+            type="button"
+            @click="changeMonth(1)"
+            class="arrow-icon opacity-40"
+            aria-label="下一個月"
+          >
+            <svg viewBox="0 0 24 24" class="arrow-svg" aria-hidden="true">
+              <path
+                d="M9 6l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
         </div>
 
         <div
