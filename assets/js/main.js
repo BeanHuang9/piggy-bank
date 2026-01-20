@@ -1,11 +1,9 @@
-const { createApp, ref, computed, nextTick } = Vue;
+const { createApp, ref, computed, nextTick, onMounted } = Vue;
 
 createApp({
   setup() {
     // ===== 狀態管理 =====
     const savings = ref(JSON.parse(localStorage.getItem('beanSavingsVue')) || {});
-    const isAmountHidden = ref(JSON.parse(localStorage.getItem('beanAmountHidden')) || false);
-
     const viewDate = ref(new Date());
     const showModal = ref(false);
     const inputAmount = ref(null);
@@ -56,12 +54,6 @@ createApp({
 
     const hasSaved = (day) => {
       return !!savings.value[getDateKey(day)];
-    };
-
-    // ===== 金額顯示/隱藏（年度收成）=====
-    const toggleAmountHidden = () => {
-      isAmountHidden.value = !isAmountHidden.value;
-      localStorage.setItem('beanAmountHidden', JSON.stringify(isAmountHidden.value));
     };
 
     // ===== 操作方法 =====
@@ -118,10 +110,23 @@ createApp({
       showModal.value = false;
     };
 
+    onMounted(async () => {
+      try {
+        const res = await fetch(
+          'https://script.google.com/macros/s/AKfycbwkDoqH8h5GpAeKLYF-izvl8s9qNQjQL93EVLXhy7iCFTT2qU3WURYtiJXOE63cJLPKFg/exec'
+        );
+
+        const sheetData = await res.json();
+
+        savings.value = sheetData;
+        localStorage.setItem('beanSavingsVue', JSON.stringify(sheetData));
+      } catch (err) {
+        console.error('讀取 Google Sheet 失敗', err);
+      }
+    });
+
     return {
       savings,
-      isAmountHidden,
-      toggleAmountHidden,
       viewYear,
       viewMonth,
       firstDayIndex,
