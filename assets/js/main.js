@@ -9,6 +9,7 @@ createApp({
     const inputAmount = ref(null);
     const selectedDateKey = ref('');
     const amountInput = ref(null);
+    const isLoading = ref(true);
 
     // ===== 計算 =====
     const viewYear = computed(() => viewDate.value.getFullYear());
@@ -101,6 +102,8 @@ createApp({
 
     // ⭐ 頁面載入時，從 Sheet 抓資料（關鍵）
     onMounted(async () => {
+      isLoading.value = true;
+
       try {
         const res = await fetch(
           'https://script.google.com/macros/s/AKfycbwkDoqH8h5GpAeKLYF-izvl8s9qNQjQL93EVLXhy7iCFTT2qU3WURYtiJXOE63cJLPKFg/exec'
@@ -111,6 +114,8 @@ createApp({
         localStorage.setItem('beanSavingsVue', JSON.stringify(sheetData));
       } catch (err) {
         console.error('讀取 Google Sheet 失敗', err);
+      } finally {
+        isLoading.value = false;
       }
     });
 
@@ -127,6 +132,7 @@ createApp({
       inputAmount,
       selectedDateKey,
       amountInput,
+      isLoading,
       getDateKey,
       isToday,
       hasSaved,
